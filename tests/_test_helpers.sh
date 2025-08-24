@@ -2,46 +2,51 @@ nl='
 '
 
 test_countLines() (
+  multiline_string="$1"
   i=0
   while IFS= read -r line; do
     i=$((i + 1))
   done <<EOF
-$1
+${multiline_string}
 EOF
   echo "$i"
 )
 
 test_firstLine() (
+  multiline_string="$1"
   while IFS= read -r line; do
-    echo "$line"
+    echo "${line}"
     break
   done <<EOF
-$1
+${multiline_string}
 EOF
 )
 
 test_lastLine() (
+  multiline_string="$1"
   last=""
   while IFS= read -r line; do
-    last="$line"
+    last="${line}"
   done <<EOF
-$1
+${multiline_string}
 EOF
-  echo "$last"
+  echo "${last}"
 )
 
 test_getLine() (
+  multiline_string="$1"
+  line_num="$2"
   i=0
   while IFS= read -r line; do
-    [ "$i" -eq "$2" ] && echo "$line" && break
+    [ "$i" -eq "${line_num}" ] && echo "${line}" && break
     i=$((i + 1))
   done <<EOF
-$1
+${multiline_string}
 EOF
 )
 
 test_shell_title() {
-  printf "\n\033[35m|\033[04;53m        $(ansi_getShellName)        \033[55;24m|\033[39m\n" >&2
+  printf "\n\033[35m|\033[04;53m        $(ansi_getShellName)        \033[55;24m|\033[39m\n\n" >&2
 }
 
 test_title() {
@@ -65,12 +70,11 @@ test_failure() {
 }
 
 test_assert() {
-  [ ! "$(printf "$1" | cat -vte)" = "$(
-    cat <<EOF
-$2
-EOF
-  )" ] && test_failure "Color test '$3' is failed!" && return 1
-  [ -n "$3" ] && test_success "Color test '$3' is passed!"
+  actual="$1"
+  expected="$2"
+  title="$3"
+  [ ! "$(printf "${actual}" | cat -vte)" = "${expected}" ] && test_failure "Color test '${title}' is failed!" && return 1
+  [ -n "${title}" ] && test_success "Color test '${title}' is passed!"
 }
 
 test_printColors() {
@@ -116,26 +120,47 @@ test_printExtColors() {
 }
 
 test_colors() {
-  test_title "$1: $(ansi_getOnCodes $2);{$3..$4}"
-  actual=$(test_printColors "$2" $(seq $3 $4))
+  title="$1"
+  ansi_codes="$2"
+  range_start="$3"
+  range_end="$4"
+  expected="$5"
+  test_title "${title}: $(ansi_getOnCodes ${ansi_codes});{${range_start}..${range_end}}"
+  actual=$(test_printColors "${ansi_codes}" $(seq ${range_start} ${range_end}))
   [ "$show_actual" -gt 0 ] && printf "$actual\n\n" >&2
-  test_assert "$actual\n" "$5" "$1"
+  test_assert "$actual\n" "${expected}" "${title}"
   [ "$?" -gt 0 ] && echo 1 && return 1
   echo 0
 }
 
 test_extColors() {
-  actual=$(test_printExtColors "$2" $(seq $3 $4))
+  title="$1"
+  ansi_codes="$2"
+  range_start="$3"
+  range_end="$4"
+  expected="$5"
+  actual=$(test_printExtColors "${ansi_codes}" $(seq ${range_start} ${range_end}))
   [ "$show_actual" -gt 0 ] && printf "$actual\n"
-  test_assert "$actual\n" "$5" "$1" 2>&1
+  test_assert "$actual\n" "${expected}" "${title}" 2>&1
+  [ "$?" -gt 0 ] && echo 1 && return 1
+  echo 0
+}
+
+test_other() {
+  title="$1"
+  actual="$2"
+  expected="$3"
+  [ "$show_actual" -gt 0 ] && printf "$actual\n"
+  test_assert "$actual\n" "${expected}" "${title}" 2>&1
   [ "$?" -gt 0 ] && echo 1 && return 1
   echo 0
 }
 
 test_runTests() (
+  test_group_name="$1"
   sum=0
   num=0
-  for result in $($1); do
+  for result in $(${test_group_name}); do
     num=$((num + 1))
     sum=$((sum + result))
   done
@@ -148,8 +173,8 @@ test_reportTests() (
 
   num=0
   sum=0
-  for line in $test_group_list; do
-    result="$(test_runTests "$line")"
+  for test_group_name in ${test_group_list}; do
+    result="$(test_runTests "${test_group_name}")"
     tests_num=${result%-*}
     tests_sum=${result#*-}
     num=$((num + ${tests_num}))
@@ -158,7 +183,7 @@ test_reportTests() (
     if [ "${tests_sum}" -gt 0 ]; then
       output_func="test_failure"
     fi
-    test_message "The results of running '$line':"
+    test_message "The results of running '${test_group_name}':"
     $output_func "Results: total: ${tests_num}, passed: $((tests_num - tests_sum)), failed: $tests_sum."
   done
   test_important "The total results of all tests running on '$shell_name':"
