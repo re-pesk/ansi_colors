@@ -2,24 +2,15 @@
 
 DIR_TESTS="$(cd "$(dirname "${0}")" && pwd)"
 
-file_name="_tests.sh"
+. "${DIR_TESTS}/_test_helpers.sh"
 
-shell_is_available() (
-  result="$(which "$1")"
-  [ "${#result}" -lt 1 ] && echo "The '$1' is not installed!" && return 1
-  return 0
-)
-
-run_script() {
-  shell_is_available "$1"
-  [ "$?" -eq 0 ] && "$1" "${DIR_TESTS}/${file_name}"
-}
+file_name="${DIR_TESTS}/_tests.sh"
 
 clear
 
-run_script dash
-# run_script yash
-# run_script bash
-# run_script ksh
-# run_script zsh
-# run_script osh
+run_script dash "${file_name}"
+run_script yash "${file_name}"
+run_script bash "${file_name}"
+run_script ksh "${file_name}"
+run_script zsh "${file_name}"
+run_script osh "${file_name}"
