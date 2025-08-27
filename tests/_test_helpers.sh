@@ -1,4 +1,4 @@
-nl='
+NL='
 '
 
 test_countLines() (
@@ -46,11 +46,11 @@ EOF
 )
 
 test_shell_title() {
-  printf "\n\033[35m|\033[04;53m        $(ansi_getShellName)        \033[55;24m|\033[39m\n\n" >&2
+  printf "\n\033[35m|\033[04;53m        $(ansi_getShellName)        \033[55;24m|\033[39m\n" >&2
 }
 
 test_title() {
-  printf "\n\033[21;35m%s\033[39;24m\n\n" "$*" >&2
+  printf "\n\033[21;35m%s\033[39;24m\n" "$*" >&2
 }
 
 test_important() {
@@ -67,6 +67,10 @@ test_success() {
 
 test_failure() {
   printf "\033[31m✖ Failure! %s\033[39m\n" "$*" >&2
+}
+
+test_summary() {
+  printf "\n\033[21;35m%s\033[39;24m\n\n" "$*" >&2
 }
 
 test_assert() {
@@ -125,7 +129,7 @@ test_colors() {
   range_start="$3"
   range_end="$4"
   expected="$5"
-  test_title "${title}: $(ansi_getOnCodes ${ansi_codes});{${range_start}..${range_end}}"
+  test_important "${title}: $(ansi_getOnCodes ${ansi_codes});{${range_start}..${range_end}}"
   actual=$(test_printColors "${ansi_codes}" $(seq ${range_start} ${range_end}))
   [ "$show_actual" -gt 0 ] && printf "$actual\n\n" >&2
   test_assert "$actual\n" "${expected}" "${title}"
@@ -186,7 +190,7 @@ test_reportTests() (
     test_message "The results of running '${test_group_name}':"
     $output_func "Results: total: ${tests_num}, passed: $((tests_num - tests_sum)), failed: $tests_sum."
   done
-  test_important "The total results of all tests running on '$shell_name':"
+  test_summary "The total results of all tests running on '$shell_name':"
   output_func="test_success"
   if [ "$sum" -gt 0 ]; then
     output_func="test_failure"
@@ -222,14 +226,14 @@ run_tests_on_shells() {
     message=""
     result="$(run_script "$shell_name" "$test_file")"
     if [ "$?" -gt 0 ]; then
-      message="$(test_failure "Tests on shell '$shell_name' are failed!" 2>&1)"
+      message="$(test_failure "Some tests on shell '$shell_name' are failed!" 2>&1)"
     else
-      message="$(test_success "Tests on shell '$shell_name' are passed!" 2>&1)"
+      message="$(test_success "All tests on shell '$shell_name' are passed!" 2>&1)"
     fi
-    message_list="${message_list:+${message_list}${nl}}${message}"
+    message_list="${message_list:+${message_list}${NL}}${message}"
   done
 
   test_message "====== Tests are finished! ======"
 
-  echo "${message_list}${nl}" >&2
+  echo "${message_list}${NL}" >&2
 }

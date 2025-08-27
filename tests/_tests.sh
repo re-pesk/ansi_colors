@@ -24,202 +24,204 @@ test_runColorTests() {
   # E_HIDE='08-28'
   # E_STRIKE='09-29'
 
-  # test_printColors "$E_RESET" $(seq 30 37) | cat -vte >&2
+  test_title "Color Tests${NL}"
+
   expected="$(
     cat <<EOF
 ^[[00m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[00m$
 ^[[00m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[00m$
 EOF
   )"
+  # test_printColors "$E_RESET" $(seq 30 37) | cat -vte >&2
   test_colors "Reset" "$E_RESET" 30 37 "$expected"
 
-  # test_printColors "$E_RESET" $(seq 40 47) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[00m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[00m$
 ^[[00m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[00m$
 EOF
   )"
+  # test_printColors "$E_RESET" $(seq 40 47) | cat -vte >&2
   test_colors "Reset (background)" "$E_RESET" 40 47 "$expected"
 
-  # test_printColors "$E_BOLD" $(seq 30 37) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[01m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[22m$
 ^[[22m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[22m$
 EOF
   )"
+  # test_printColors "$E_BOLD" $(seq 30 37) | cat -vte >&2
   test_colors "Bold" "$E_BOLD" 30 37 "$expected"
 
-  # test_printColors "$E_BOLD" $(seq 40 47) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[01m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[22m$
 ^[[22m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[22m$
 EOF
   )"
+  # test_printColors "$E_BOLD" $(seq 40 47) | cat -vte >&2
   test_colors "Bold (background)" "$E_BOLD" 40 47 "$expected"
 
-  # test_printColors "$E_FAINT" 30 $(seq 30 37) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[02m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[22m$
 ^[[22m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[22m$
 EOF
   )"
+  # test_printColors "$E_FAINT" 30 $(seq 30 37) | cat -vte >&2
   test_colors "Faint" "$E_FAINT" 30 37 "$expected"
 
-  # test_printColors "$E_FAINT" 40 $(seq 40 47) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[02m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[22m$
 ^[[22m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[22m$
 EOF
   )"
+  # test_printColors "$E_FAINT" 40 $(seq 40 47) | cat -vte >&2
   test_colors "Faint (background)" "$E_FAINT" 40 47 "$expected"
 
-  # test_printColors "$E_ITALIC" 30 $(seq 30 37) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[03m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[23m$
 ^[[23m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[23m$
 EOF
   )"
+  # test_printColors "$E_ITALIC" 30 $(seq 30 37) | cat -vte >&2
   test_colors "Italic" "$E_ITALIC" 30 37 "$expected"
 
-  # test_printColors "$E_ITALIC" 40 $(seq 40 47) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[03m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[23m$
 ^[[23m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[23m$
 EOF
   )"
+  # test_printColors "$E_ITALIC" 40 $(seq 40 47) | cat -vte >&2
   test_colors "Italic (background)" "$E_ITALIC" 40 47 "$expected"
 
-  # test_printColors "$E_UNDERLINE" 30 $(seq 30 37) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[04m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[24m$
 ^[[24m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[24m$
 EOF
   )"
+  # test_printColors "$E_UNDERLINE" 30 $(seq 30 37) | cat -vte >&2
   test_colors "Underline" "$E_UNDERLINE" 30 37 "$expected"
 
-  # test_printColors "$E_UNDERLINE" 40 $(seq 40 47) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[04m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[24m$
 ^[[24m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[24m$
 EOF
   )"
+  # test_printColors "$E_UNDERLINE" 40 $(seq 40 47) | cat -vte >&2
   test_colors "Underline (background)" "$E_UNDERLINE" 40 47 "$expected"
 
-  # test_printColors "$E_UNDERLINE" 30 $(seq 30 37) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[21m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[24m$
 ^[[24m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[24m$
 EOF
   )"
+  # test_printColors "$E_UNDERLINE" 30 $(seq 30 37) | cat -vte >&2
   test_colors "Underline" "$E_UNDERLINE_DOUBLE" 30 37 "$expected"
 
-  # test_printColors "$E_UNDERLINE" 40 $(seq 40 47) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[21m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[24m$
 ^[[24m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[24m$
 EOF
   )"
+  # test_printColors "$E_UNDERLINE" 40 $(seq 40 47) | cat -vte >&2
   test_colors "Underline (background)" "$E_UNDERLINE_DOUBLE" 40 47 "$expected"
 
-  # test_printColors "$E_OVERLINE" 30 $(seq 30 37) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[53m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[55m$
 ^[[55m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[55m$
 EOF
   )"
+  # test_printColors "$E_OVERLINE" 30 $(seq 30 37) | cat -vte >&2
   test_colors "Overline" "$E_OVERLINE" 30 37 "$expected"
 
-  # test_printColors "$E_OVERLINE" 40 $(seq 40 47) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[53m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[55m$
 ^[[55m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[55m$
 EOF
   )"
+  # test_printColors "$E_OVERLINE" 40 $(seq 40 47) | cat -vte >&2
   test_colors "Overline (background)" "$E_OVERLINE" 40 47 "$expected"
 
-  # test_printColors "$E_BLINK" 30 $(seq 30 37) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[05m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[25m$
 ^[[25m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[25m$
 EOF
   )"
+  # test_printColors "$E_BLINK" 30 $(seq 30 37) | cat -vte >&2
   test_colors "Blink" "$E_BLINK" 30 37 "$expected"
 
-  # test_printColors "$E_BLINK" 40 $(seq 40 47) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[05m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[25m$
 ^[[25m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[25m$
 EOF
   )"
+  # test_printColors "$E_BLINK" 40 $(seq 40 47) | cat -vte >&2
   test_colors "Blink (background)" "$E_BLINK" 40 47 "$expected"
 
-  # test_printColors "$E_INVERT" 30 $(seq 30 37) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[07m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[27m$
 ^[[27m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[27m$
 EOF
   )"
+  # test_printColors "$E_INVERT" 30 $(seq 30 37) | cat -vte >&2
   test_colors "Invert" "$E_INVERT" 30 37 "$expected"
 
-  # test_printColors "$E_INVERT" 40 $(seq 40 47) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[07m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[27m$
 ^[[27m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[27m$
 EOF
   )"
+  # test_printColors "$E_INVERT" 40 $(seq 40 47) | cat -vte >&2
   test_colors "Invert (background)" "$E_INVERT" 40 47 "$expected"
 
-  # test_printColors "$E_STRIKE" 30 $(seq 30 37) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[09m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[29m$
 ^[[29m^[[30m0^[[31m1^[[32m2^[[33m3^[[34m4^[[35m5^[[36m6^[[37m7^[[39m^[[29m$
 EOF
   )"
+  # test_printColors "$E_STRIKE" 30 $(seq 30 37) | cat -vte >&2
   test_colors "Strike" "$E_STRIKE" 30 37 "$expected"
 
-  # test_printColors "$E_STRIKE" 40 $(seq 40 47) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[09m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[29m$
 ^[[29m^[[40m0^[[41m1^[[42m2^[[43m3^[[44m4^[[45m5^[[46m6^[[47m7^[[49m^[[29m$
 EOF
   )"
+  # test_printColors "$E_STRIKE" 40 $(seq 40 47) | cat -vte >&2
   test_colors "Strike (background)" "$E_STRIKE" 40 47 "$expected"
 
-  # test_printColors "$E_RESET" 90 $(seq 90 97) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[00m^[[90m0^[[91m1^[[92m2^[[93m3^[[94m4^[[95m5^[[96m6^[[97m7^[[39m^[[00m$
 ^[[00m^[[90m0^[[91m1^[[92m2^[[93m3^[[94m4^[[95m5^[[96m6^[[97m7^[[39m^[[00m$
 EOF
   )"
+  # test_printColors "$E_RESET" 90 $(seq 90 97) | cat -vte >&2
   test_colors "Bright Colors" "$E_RESET" 90 97 "$expected"
 
-  # test_printColors "$E_RESET" 100 $(seq 100 107) | cat -vte >&2
   expected="$(
     cat <<EOF
 ^[[00m^[[100m0^[[101m1^[[102m2^[[103m3^[[104m4^[[105m5^[[106m6^[[107m7^[[49m^[[00m$
 ^[[00m^[[100m0^[[101m1^[[102m2^[[103m3^[[104m4^[[105m5^[[106m6^[[107m7^[[49m^[[00m$
 EOF
   )"
+  # test_printColors "$E_RESET" 100 $(seq 100 107) | cat -vte >&2
   test_colors "Bright Colors (background)" "$E_RESET" 100 107 "$expected"
   printf ""
   return 0
@@ -238,7 +240,7 @@ test_runExtColorTests() {
   # E_HIDE='08-28'
   # E_STRIKE='09-29'
 
-  test_title "Extended Colors"
+  test_title "Extended Color Tests${NL}"
 
   expected="$(
     cat <<EOF
@@ -263,7 +265,7 @@ EOF
     # test_printExtColors "$EF_EXT" $(seq $((i * 36 + 16)) $((i * 36 + 51))) # | cat -vte >&2
     result="$(test_extColors "Extended Colors $((i * 36 + 16))-$((i * 36 + 51))" "$EF_EXT" $((i * 36 + 16)) $((i * 36 + 51)) "$(test_getLine "$expected" "$((i + 1))")")"
     echo "$(test_firstLine "$result")" >&2
-    messages="${messages}${nl}$(test_getLine "$result" 1)"
+    messages="${messages}${NL}$(test_getLine "$result" 1)"
     echo "$(test_lastLine "$result")"
   done
 
@@ -271,12 +273,12 @@ EOF
   result="$(test_extColors "Extended Colors 232-255" "$EF_EXT" 232 255 "$(test_lastLine "$expected")")"
 
   echo "$(test_firstLine "$result")" >&2
-  messages="${messages}${nl}$(test_getLine "$result" 1)"
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
   echo "$(test_lastLine "$result")"
 
-  echo "${nl}$messages" >&2
+  echo "${NL}$messages" >&2
 
-  test_title "Extended Colors (background)"
+  test_title "Extended Color Tests (background)${NL}"
 
   expected="$(
     cat <<EOF
@@ -304,7 +306,7 @@ EOF
     # test_printExtColors "$EF_EXT" $(seq $((i * 36 + 16)) $((i * 36 + 51))) # | cat -vte >&2
     result="$(test_extColors "Extended Colors (background) $((i * 36 + 16))-$((i * 36 + 51))" "$EB_EXT" $((i * 36 + 16)) $((i * 36 + 51)) "$(test_getLine "$expected" "$((i + 1))")")"
     echo "$(test_firstLine "$result")" >&2
-    messages="${messages}${nl}$(test_getLine "$result" 1)"
+    messages="${messages}${NL}$(test_getLine "$result" 1)"
     echo "$(test_lastLine "$result")"
   done
 
@@ -313,10 +315,10 @@ EOF
 
   # echo "'$result'" >&2 # | cat -vte >&2
   echo "$(test_firstLine "$result")" >&2
-  messages="${messages}${nl}$(test_getLine "$result" 1)"
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
   echo "$(test_lastLine "$result")"
 
-  echo "${nl}$messages" >&2
+  echo "${NL}$messages" >&2
 }
 
 test_reportTests "$test_group_list"
