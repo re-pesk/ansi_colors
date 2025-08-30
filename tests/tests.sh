@@ -8,4 +8,4 @@ test_file="${DIR_TESTS}/_tests.sh"
 
 shell_list="dash yash bash ksh zsh osh"
 
-run_tests_on_shells "$shell_list" "$test_file"
+run_tests_on_shells "${shell_list}" "${test_file}"

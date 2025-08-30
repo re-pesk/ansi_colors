@@ -187,10 +187,10 @@ test_reportTests() (
     if [ "${tests_sum}" -gt 0 ]; then
       output_func="test_failure"
     fi
-    test_message "The results of running '${test_group_name}':"
+    test_message "Results of running '${test_group_name}':"
     $output_func "Results: total: ${tests_num}, passed: $((tests_num - tests_sum)), failed: $tests_sum."
   done
-  test_summary "The total results of all tests running on '$shell_name':"
+  test_summary "Total results of all tests running on '$shell_name':"
   output_func="test_success"
   if [ "$sum" -gt 0 ]; then
     output_func="test_failure"

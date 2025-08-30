@@ -9,20 +9,21 @@ shell_name="$(ansi_getShellName)"
 [ "$(ansi_getShellName)" = "zsh" ] && setopt sh_word_split
 
 show_actual=1
-test_group_list="test_runColorTests test_runExtColorTests"
+test_group_list="test_runColorTests test_runExtColorTests test_runOtherTests"
 
-test_runColorTests() {
-  # E_RESET='00-00'
-  # E_BOLD='01-22'
-  # E_FAINT='02-22'
-  # E_ITALIC='03-23'
-  # E_UNDERLINE='04-24'
-  # E_UNDERLINE_DOUBLE='21-24'
-  # E_OVERLINE='53-55'
-  # E_BLINK='05-25'
-  # E_INVERT='07-27'
-  # E_HIDE='08-28'
-  # E_STRIKE='09-29'
+# E_RESET='00-00'
+# E_BOLD='01-22'
+# E_FAINT='02-22'
+# E_ITALIC='03-23'
+# E_UNDERLINE='04-24'
+# E_UNDERLINE_DOUBLE='21-24'
+# E_OVERLINE='53-55'
+# E_BLINK='05-25'
+# E_INVERT='07-27'
+# E_HIDE='08-28'
+# E_STRIKE='09-29'
+
+test_runColorTests() (
 
   test_title "Color Tests${NL}"
 
@@ -225,20 +226,9 @@ EOF
   test_colors "Bright Colors (background)" "$E_RESET" 100 107 "$expected"
   printf ""
   return 0
-}
+)
 
-test_runExtColorTests() {
-  # E_RESET='00-00'
-  # E_BOLD='01-22'
-  # E_FAINT='02-22'
-  # E_ITALIC='03-23'
-  # E_UNDERLINE='04-24'
-  # E_UNDERLINE_DOUBLE='21-24'
-  # E_OVERLINE='53-55'
-  # E_BLINK='05-25'
-  # E_INVERT='07-27'
-  # E_HIDE='08-28'
-  # E_STRIKE='09-29'
+test_runExtColorTests() (
 
   test_title "Extended Color Tests${NL}"
 
@@ -319,6 +309,137 @@ EOF
   echo "$(test_lastLine "$result")"
 
   echo "${NL}$messages" >&2
-}
+)
+
+test_runOtherTests() (
+  test_ansiBold() {
+    ansi_text "${E_BOLD}" "$@"
+  }
+
+  test_ansiRed() {
+    ansi_text "${EF_RED}" "$@"
+  }
+
+  test_ansiGreen() {
+    ansi_text "${EF_GREEN}" "$@"
+  }
+
+  test_ansiSpace() {
+    ansi_text "${E_RESET}" " "
+  }
+
+  test_title "Other Tests${NL}"
+
+  expected="^[[31mHello world^[[39m^[[31m ^[[39m^[[31mHello world^[[39m"
+  # ansi_text "$EF_RED" "Hello world" " " "Hello world" | cat -vte >&2; echo
+  result="$(test_other "Hello world with whitespace in the end" "$(ansi_text "$EF_RED" "Hello world" " " "Hello world")" "$expected")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  expected="^[[31m ^[[39m^[[31mHello world^[[39m^[[31m abc ^[[39m^[[31mHello world^[[39m"
+  # ansi_text "${EF_RED}" " " "Hello world" " abc " "Hello world" | cat -vte >&2; echo >&2
+  result="$(test_other "Hello world with whitespace in the beginning" "$(ansi_text "${EF_RED}" " " "Hello world" " abc " "Hello world")" "$expected")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  expected="^[[01m^[[31mHello world^[[39m^[[31m ^[[39m^[[31mHello world^[[39m^[[22m"
+  # ansi_text "${E_BOLD}" "$(ansi_text "${EF_RED}" "Hello world" " " "Hello world")" | cat -vte >&2
+  result="$(test_other "Hello world with bold" "$(ansi_text "${E_BOLD}" "$(ansi_text "${EF_RED}" "Hello world" " " "Hello world")")" "$expected")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  expected="^[[01m^[[31mHello world^[[39m^[[22m^[[01m ^[[22m^[[01m^[[32mHello world^[[39m^[[22m"
+  # ansi_text "${E_BOLD}" "$(ansi_text "${EF_RED}" "Hello world")" " " "$(ansi_text "${EF_GREEN}" "Hello world")" | cat -vte >&2
+  result="$(test_other "Hello world in bold and red and green" "$(ansi_text "${E_BOLD}" "$(ansi_text "${EF_RED}" "Hello world")" " " "$(ansi_text "${EF_GREEN}" "Hello world")")" "$expected")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  expected="^[[01;04;35mHeader^[[39;24;22m"
+  # ansi_text "${E_BOLD}|${E_UNDERLINE}|${EF_MAGENTA}" "Header" | cat -vte >&2
+  result="$(test_other "Header" "$(ansi_text "${E_BOLD}|${E_UNDERLINE}|${EF_MAGENTA}" "Header")" "$expected")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  expected="^[[35mMessage^[[39m"
+  # ansi_text "${EF_MAGENTA}" "Message" | cat -vte >&2
+  result="$(test_other "Message" "$(ansi_text "${EF_MAGENTA}" "Message")" "$expected")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  expected="^[[32mSuccess^[[39m"
+  # ansi_text "${EF_GREEN}" "Success" | cat -vte >&2
+  result="$(test_other "Success" "$(ansi_text "${EF_GREEN}" "Success")" "$expected")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  expected="^[[31mFailure^[[39m"
+  # ansi_text "${EF_RED}" "Failure" | cat -vte >&2
+  result="$(test_other "Failure" "$(ansi_text "${EF_RED}" "Failure")" "$expected")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  expected="^[[09;31mHello world^[[39;29m"
+  # ansi_text "09-29|31-39" "Hello world" | cat -vte >&2
+  result="$(test_other "Code texts" "$(ansi_text "09-29|31-39" "Hello world")" "$expected")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  expected="^[[37;44;2mTester^[[22;49;39m"
+  # ansi_text "37-39|44-49|2-22" "Tester" | cat -vte >&2
+  result="$(test_other "Tester" "$(ansi_text "37-39|44-49|2-22" "Tester")" "$expected")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  expected="^[[00m^[[09;31;42mHello world^[[49;39;29m^[[09;31;42m^[[00m ^[[00m^[[49;39;29m^[[09;31;42m^[[03;37;44mTester^[[49;39;23m^[[03;37;44m^[[00m ^[[00m^[[49;39;23m^[[49;39;29m^[[09;31;42mLabas rytas^[[49;39;29m^[[09;31;42m^[[00m ^[[00m^[[49;39;29m^[[00m^[[00mLabas rytas^[[00m"
+  # ansi_text "00-00" "$(ansi_text "09-29|31-39|42-49" "Hello world" "$(ansi_text "00-00" " ")" "$(ansi_text "03;37;44-49;39;23" "Tester" "$(ansi_text "00-00" " ")")" "Labas rytas" "$(ansi_text "00-00" " ")")" "Labas rytas" | cat -vte >&2
+  result="$(test_other "Hello world 1" "$(ansi_text "00-00" "$(ansi_text "09-29|31-39|42-49" "Hello world" "$(ansi_text "00-00" " ")" "$(ansi_text "03;37;44-49;39;23" "Tester" "$(ansi_text "00-00" " ")")" "Labas rytas" "$(ansi_text "00-00" " ")")" "Labas rytas")" "$expected")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  # ansi_text "${E_RESET}" "$(ansi_text "${E_STRIKE}|${EF_RED}|${EB_GREEN}" "Hello world" "$(ansi_text "${E_RESET}" " ")" "$(ansi_text "${E_ITALIC}|${EF_WHITE}|${EB_BLUE}" "Tester" "$(ansi_text "${E_RESET}" " ")")" "Labas rytas" "$(ansi_text "${E_RESET}" " ")")" "Labas rytas" | cat -vte >&2
+  result="$(test_other "Hello world 2" "$(ansi_text "${E_RESET}" "$(ansi_text "${E_STRIKE}|${EF_RED}|${EB_GREEN}" "Hello world" "$(ansi_text "${E_RESET}" " ")" "$(ansi_text "${E_ITALIC}|${EF_WHITE}|${EB_BLUE}" "Tester" "$(ansi_text "${E_RESET}" " ")")" "Labas rytas" "$(ansi_text "${E_RESET}" " ")")" "Labas rytas")" "${expected}")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  expected="^[[31mGood^[[39m^[[31m^[[00m ^[[00m^[[39m^[[31m^[[32m^[[01mmorning^[[22m^[[39m^[[32m^[[00m ^[[00m^[[39m^[[32mGood^[[39m^[[39m^[[31m^[[00m ^[[00m^[[39m^[[31mevening^[[39m"
+  # printf "\033[31mGood\033[39m\033[31m\033[00m \033[00m\033[39m\033[31m\033[32m\033[01mmorning\033[22m\033[39m\033[32m\033[00m \033[00m\033[39m\033[32mGood\033[39m\033[39m\033[31m\033[00m \033[00m\033[39m\033[31mevening\033[39m" | cat -vte >&2
+  result="$(test_other "Good morning 1" "$(printf "\033[31mGood\033[39m\033[31m\033[00m \033[00m\033[39m\033[31m\033[32m\033[01mmorning\033[22m\033[39m\033[32m\033[00m \033[00m\033[39m\033[32mGood\033[39m\033[39m\033[31m\033[00m \033[00m\033[39m\033[31mevening\033[39m")" "${expected}")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  # test_ansiRed Good "$(test_ansiSpace)" "$(test_ansiGreen "$(test_ansiBold morning)" "$(test_ansiSpace)" Good)" "$(test_ansiSpace)" evening | cat -vte >&2
+  result="$(test_other "Good morning 2" "$(test_ansiRed Good "$(test_ansiSpace)" "$(test_ansiGreen "$(test_ansiBold morning)" "$(test_ansiSpace)" Good)" "$(test_ansiSpace)" evening)" "${expected}")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  # ansi_text "${EF_RED}" "Good" "$(ansi_text "${E_RESET}" " ")" "$(ansi_text "${EF_GREEN}" "$(ansi_text "${E_BOLD}" "morning")" "$(ansi_text "${E_RESET}" " ")" "Good")" "$(ansi_text "${E_RESET}" " ")" "evening" | cat -vte >&2
+  result="$(test_other "Good morning 3" "$(ansi_text "${EF_RED}" "Good" "$(ansi_text "${E_RESET}" " ")" "$(ansi_text "${EF_GREEN}" "$(ansi_text "${E_BOLD}" "morning")" "$(ansi_text "${E_RESET}" " ")" "Good")" "$(ansi_text "${E_RESET}" " ")" "evening")" "${expected}")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  expected="^[[04;32mHello^[[39;24m^[[39;24m ^[[04;32m^[[39;24m^[[09;31mbeautiful^[[39;29m^[[04;32m^[[39;24m ^[[04;32m^[[04;32mworld^[[39;24m"
+  # ansi_text "${E_UNDERLINE}|${EF_GREEN}" Hello "[OFF]" "[OFF]$(ansi_text "${E_STRIKE}|${EF_RED}" beautiful)" "[OFF]" "world" | cat -vte >&2
+  result="$(test_other "Beautiful world" "$(ansi_text "${E_UNDERLINE}|${EF_GREEN}" Hello "[OFF]" "[OFF]$(ansi_text "${E_STRIKE}|${EF_RED}" beautiful)" "[OFF]" "world")" "${expected}")"
+  echo "$(test_firstLine "$result")" >&2
+  messages="${messages}${NL}$(test_getLine "$result" 1)"
+  echo "$(test_lastLine "$result")"
+
+  echo "${NL}$messages" >&2
+)
 
 test_reportTests "$test_group_list"
