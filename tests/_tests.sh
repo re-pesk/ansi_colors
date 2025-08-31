@@ -3,7 +3,7 @@ DIR_SRC="$(cd "$(dirname "${0}")/.." && pwd)"
 
 . "${DIR_TESTS}/_test_helpers.sh"
 # shellcheck source=ansi_esc_codes.sh
-. "$DIR_SRC/ansi_esc_codes.sh"
+. "$DIR_SRC/ansi_colors.sh"
 
 shell_name="$(ansi_getShellName)"
 [ "$(ansi_getShellName)" = "zsh" ] && setopt sh_word_split
