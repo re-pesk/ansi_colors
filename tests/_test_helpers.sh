@@ -45,33 +45,39 @@ ${multiline_string}
 EOF
 )
 
-test_shell_title() {
-  printf "\n\033[35m|\033[04;53m        $(ansi_getShellName)        \033[55;24m|\033[39m\n" >&2
-}
-
 test_title() {
-  printf "\n\033[21;35m%s\033[39;24m\n" "$*" >&2
+  env printf "\n\033[21;35m%b\033[39;24m\n" "$*" >&2
 }
 
 test_important() {
-  printf "\n\033[04;35m%s\033[39;24m\n\n" "$*" >&2
+  env printf "\n\033[04;35m%b\033[39;24m\n\n" "$*" >&2
 }
 
 test_message() {
-  printf "\n\033[35m%s\033[39m\n\n" "$*" >&2
+  env printf "\n\033[35m%b\033[39m\n\n" "$*" >&2
 }
 
 test_success() {
-  printf "\033[32m✔ Success! %s\033[39m\n" "$*" >&2
+  env printf "\033[32m✔ Success! %b\033[39m\n" "$*" >&2
 }
 
 test_failure() {
-  printf "\033[31m✖ Failure! %s\033[39m\n" "$*" >&2
+  env printf "\033[31m✖ Failure! %b\033[39m\n" "$*" >&2
 }
 
 test_summary() {
-  printf "\n\033[21;35m%s\033[39;24m\n\n" "$*" >&2
+  env printf "\n\033[21;35m%b\033[39;24m\n\n" "$*" >&2
 }
+
+test_shell_title() (
+  shell_name="$(ansi_getShellName)"
+  plength="$1"
+  length=$(( ${#shell_name} + ${plength} + ${plength} ))
+  padding="$(for i in $(seq 1 ${plength}); do printf " "; done)"
+  hborder="$(for i in $(seq 1 ${length}); do printf "\u2550"; done)"
+  text="\u2554${hborder}\u2557\n\u2551${padding}${shell_name}${padding}\u2551\n\u255A${hborder}\u255D"
+  test_message "${text}"
+)
 
 test_assert() {
   actual="$1"
@@ -155,7 +161,7 @@ test_other() {
   actual="$2"
   expected="$3"
   [ "$show_actual" -gt 0 ] && printf "$actual\n"
-  test_assert "$actual\n" "${expected}" "${title}" 2>&1
+  test_assert "$actual" "${expected}" "${title}" 2>&1
   [ "$?" -gt 0 ] && echo 1 && return 1
   echo 0
 }
@@ -173,7 +179,7 @@ test_runTests() (
 
 test_reportTests() (
   test_group_list="$1"
-  test_shell_title
+  test_shell_title 20
 
   num=0
   sum=0
